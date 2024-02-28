@@ -5,10 +5,12 @@ import SubHeading from "../components/SubHeading";
 import Button from "../components/Button";
 import BottomWarning from "../components/BottomWarning";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const headers = {
   "Content-Type": "multipart/form-data",
 };
 const SignUp = () => {
+  const navigate = useNavigate();
   const [fullName, setFullName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -77,7 +79,9 @@ const SignUp = () => {
                   },
                   { headers }
                 );
+
                 console.log(response);
+                navigate("/signin");
               }}
               label={"Sign up"}
             />
@@ -85,7 +89,7 @@ const SignUp = () => {
           <BottomWarning
             label="Already have an account?"
             buttonText="Sign in"
-            to={"/singin"}
+            to={"/signin"}
           />
         </div>
       </div>
