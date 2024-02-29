@@ -5,10 +5,12 @@ import SubHeading from "../components/SubHeading";
 import Button from "../components/Button";
 import BottomWarning from "../components/BottomWarning";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const headers = {
   "Content-Type": "application/json",
 };
 const SignIn = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   return (
@@ -43,6 +45,7 @@ const SignIn = () => {
                   { headers, withCredentials: true }
                 );
                 console.log(response);
+                navigate("/");
               }}
             />
           </div>
