@@ -5,12 +5,14 @@ import SubHeading from "../components/SubHeading";
 import Button from "../components/Button";
 import BottomWarning from "../components/BottomWarning";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 const headers = {
   "Content-Type": "application/json",
 };
 const SignIn = () => {
   const navigate = useNavigate();
+  const notify = () => toast.loading("sign in");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   return (
@@ -39,15 +41,38 @@ const SignIn = () => {
             <Button
               label={"SignIn"}
               onClick={async () => {
-                const response = await axios.post(
-                  "http://localhost:8000/api/v1/users/login",
-                  { email: email, password: password },
-                  { headers, withCredentials: true }
-                );
-                console.log(response);
-                navigate("/");
+                const loadingToastId = toast.loading("Loading......");
+                try {
+                  const response = await axios.post(
+                    "http://localhost:8000/api/v1/users/login",
+                    { email: email, password: password },
+                    { headers, withCredentials: true }
+                  );
+                  if (response.status == 200) {
+                    toast.success("User Login Successfully");
+                    console.log(response);
+                    navigate("/");
+                  } else {
+                    toast.dismiss(loadingToastId);
+                    console.log("Error:", response.statusText);
+                    toast.error("Error While Processing Please Try Again", {
+                      duration: 700,
+                    });
+                    return;
+                  }
+                } catch (error: any) {
+                  toast.dismiss(loadingToastId);
+                  toast.error("Error While Processing Please Try Again", {
+                    duration: 700,
+                  });
+                  console.error("ERROR: ", error.message);
+                  return;
+                } finally {
+                  toast.dismiss(loadingToastId);
+                }
               }}
             />
+            <Toaster />
           </div>
           <BottomWarning
             label={"Don't have an account?"}

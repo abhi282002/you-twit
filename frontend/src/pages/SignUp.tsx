@@ -6,11 +6,14 @@ import Button from "../components/Button";
 import BottomWarning from "../components/BottomWarning";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import { duration } from "@mui/material";
 const headers = {
   "Content-Type": "multipart/form-data",
 };
 const SignUp = () => {
   const navigate = useNavigate();
+  const notify = () => toast.loading("sign in");
   const [fullName, setFullName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -68,20 +71,40 @@ const SignUp = () => {
           <div className="pt-4">
             <Button
               onClick={async () => {
-                const response = await axios.post(
-                  "http://localhost:8000/api/v1/users/register",
-                  {
-                    fullName: fullName,
-                    username: username,
-                    email: email,
-                    password: password,
-                    avatar: avatar,
-                  },
-                  { headers }
-                );
+                const loadingToastId = toast.loading("SignUp Processing");
+                try {
+                  const response = await axios.post(
+                    "http://localhost:8000/api/v1/users/register",
+                    {
+                      fullName: fullName,
+                      username: username,
+                      email: email,
+                      password: password,
+                      avatar: avatar,
+                    },
+                    { headers }
+                  );
 
-                console.log(response);
-                navigate("/signin");
+                  if (response.status == 200) {
+                    toast.dismiss(loadingToastId);
+                    toast.success("User SignUp Successfully");
+                    navigate("/signin");
+                  } else {
+                    toast.dismiss(loadingToastId);
+                    toast.error("Error While Processing Please Try Again", {
+                      duration: 700,
+                    });
+                    return;
+                  }
+                } catch (err) {
+                  toast.dismiss(loadingToastId);
+                  toast.error("Error While Processing Please Try Again", {
+                    duration: 700,
+                  });
+                  return;
+                } finally {
+                  toast.dismiss(loadingToastId);
+                }
               }}
               label={"Sign up"}
             />

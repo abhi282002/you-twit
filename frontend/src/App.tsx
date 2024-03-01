@@ -7,13 +7,6 @@ import UserContext from "./Store/UserContext";
 import axios from "axios";
 import Cookie from "js-cookie";
 function App() {
-  const getAccessToken = () => Cookie.get("accessToken");
-  const accessToken = getAccessToken();
-  console.log("acccess", accessToken);
-
-  const header: Record<string, string> = {
-    Authorization: `Bearer ${accessToken}`,
-  };
   interface User {
     // Define the properties of your user object
     id: number;
@@ -32,41 +25,12 @@ function App() {
     avatar: "",
     coverImage: "",
   });
-  useEffect(() => {
-    getCurrentUser();
-  }, []);
-  const getCurrentUser = async () => {
-    const response: any = await axios.get(
-      "http://localhost:8000/api/v1/users/current-user",
-      {
-        headers: header,
-        withCredentials: true,
-      }
-    );
-    const { _id, avatar, coverImage, email, fullName, username } =
-      response?.data?.data;
-    setCurrentUser({
-      id: _id,
-      avatar: avatar,
-      email: email,
-      fullName: fullName,
-      username: username,
-      coverImage: coverImage,
-    });
-    console.log(currentUser?.id);
-  };
+
   return (
     <UserContext.Provider
       value={{
-        loggedInUser: {
-          id: String(currentUser?.id) || "", // Provide a default value (empty string in this case)
-          username: currentUser?.username || "",
-          fullName: currentUser?.fullName || "",
-          email: currentUser?.email || "",
-          avatar: currentUser?.avatar || "",
-          coverImage: currentUser?.coverImage || "",
-        },
-        headers: header,
+        loggedInUser: {},
+        setCurrentUser,
       }}
     >
       <Router>
