@@ -44,7 +44,7 @@ export const createAccount = createAsyncThunk(
         success: (data) => {
           return data?.data?.message;
         },
-        error: "Failed To Create Account",
+        error: "Failed To Create Account! Please Try Again",
       });
       return (await response).data;
     } catch (error: any) {
@@ -65,7 +65,7 @@ export const LoginAccount = createAsyncThunk(
         success: (data) => {
           return data?.data?.message;
         },
-        error: "Failed To Login Account",
+        error: "Failed To Login Account! Please Try Again",
       });
       return (await res).data;
     } catch (error: any) {
@@ -79,6 +79,15 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(LoginAccount.fulfilled, (state, action) => {
+      const localStorage = window.localStorage as Storage;
+      localStorage.setItem("data", JSON.stringify(action?.payload?.data?.user));
+      localStorage.setItem("isLoggedIn", "true");
+      state.data = action?.payload?.user;
+      state.isLoggedIn = true;
+    });
+  },
 });
 
 export const selectAuth = (state: RootState) => state.auth;
