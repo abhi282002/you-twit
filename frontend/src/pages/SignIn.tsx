@@ -5,16 +5,28 @@ import SubHeading from "../components/SubHeading";
 import Button from "../components/Button";
 import BottomWarning from "../components/BottomWarning";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import { useAppDispatch } from "../store/hook";
 import { useNavigate } from "react-router-dom";
+import { LoginAccount } from "../store/Slices/AuthSlice";
 const headers = {
   "Content-Type": "application/json",
 };
 const SignIn = () => {
   const navigate = useNavigate();
-  const notify = () => toast.loading("sign in");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const dispatch = useAppDispatch();
+  interface SignInInterface {
+    email: string;
+    password: string;
+  }
+  const [userInput, setUserInput] = useState<SignInInterface>({
+    email: "",
+    password: "",
+  });
+  const handleUserInput = (e: any) => {
+    const { name, value } = e.target;
+    setUserInput({ ...userInput, [name]: value });
+  };
+
   return (
     <div className="bg-slate-300 h-screen flex justify-center">
       <div className="flex flex-col justify-center">
@@ -23,56 +35,32 @@ const SignIn = () => {
           <SubHeading label={"Enter your credentials to access your account"} />
           <InputBox
             type="text"
+            onChange={handleUserInput}
             placeholder={"abhishek@gmail.com"}
             label={"Email"}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
+            name="email"
+            value={userInput.email}
           />
           <InputBox
             type="text"
-            placeholder={"123456"}
-            label={"Password"}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
+            placeholder="12345678"
+            label="Password"
+            name="password"
+            onChange={handleUserInput}
+            value={userInput.password}
           />
           <div className="pt-4">
             <Button
               label={"SignIn"}
               onClick={async () => {
-                const loadingToastId = toast.loading("Loading......");
-                try {
-                  const response = await axios.post(
-                    "http://localhost:8000/api/v1/users/login",
-                    { email: email, password: password },
-                    { headers, withCredentials: true }
-                  );
-                  if (response.status == 200) {
-                    toast.success("User Login Successfully");
-                    console.log(response);
-                    navigate("/");
-                  } else {
-                    toast.dismiss(loadingToastId);
-                    console.log("Error:", response.statusText);
-                    toast.error("Error While Processing Please Try Again", {
-                      duration: 700,
-                    });
-                    return;
-                  }
-                } catch (error: any) {
-                  toast.dismiss(loadingToastId);
-                  toast.error("Error While Processing Please Try Again", {
-                    duration: 700,
-                  });
-                  console.error("ERROR: ", error.message);
-                  return;
-                } finally {
-                  toast.dismiss(loadingToastId);
+                const res = await dispatch(LoginAccount(userInput));
+                console.log(res);
+
+                if (res?.payload?.success) {
+                  navigate("/");
                 }
               }}
             />
-            <Toaster />
           </div>
           <BottomWarning
             label={"Don't have an account?"}
