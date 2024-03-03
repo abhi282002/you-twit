@@ -8,6 +8,7 @@ import ReactPlayer from "react-player";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { RootState } from "../store/store";
 import { AllVideos } from "../store/Slices/videoSlices";
+import Shimmer from "../components/Shimmer";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -35,22 +36,15 @@ const DisplayVideo = () => {
 
   const VideosArray = videos?.docs;
 
-  if (!VideosArray) {
-    console.log("ret");
-
-    return <div>Hello</div>;
-  }
-
   return (
     <>
       <div>
         <Header />
       </div>
-      <Box display="grid" gridTemplateAreas="repeat(12, 1fr)" gap={2}>
-        {VideosArray &&
-          VideosArray.map((video) => (
-            <Box key={video.id} gridColumn="span 8">
-              <Item className="lg:w-[370px] h-[250px]">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        {VideosArray
+          ? VideosArray.map((video) => (
+              <div className="h-[220px] relative shadow-xl ">
                 <ReactPlayer
                   url={video?.videoFile?.url}
                   light={video?.thumbnail?.url}
@@ -59,10 +53,21 @@ const DisplayVideo = () => {
                   height="100%"
                   controls={false}
                 />
-              </Item>
-            </Box>
-          ))}
-      </Box>
+                <div className="absolute bottom-3 line-clamp-4 left-2">
+                  <h3>{video?.description}</h3>
+                </div>
+              </div>
+            ))
+          : Array(12)
+              .fill("")
+              .map((e, index) => (
+                <div className="flex flex-col" key={index}>
+                  <div className=" w-60 h-40 border  bg-gray-200  text-black/100"></div>
+                  <div className=" mt-4 ml-0.5 w-36 h-3 border-grey border-2 rounded-md bg-gray-200"></div>
+                  <div className=" mt-4 ml-0.5 w-20 h-3 border-grey border-2 rounded-md bg-gray-200"></div>
+                </div>
+              ))}
+      </div>
     </>
   );
 };
