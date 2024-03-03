@@ -31,14 +31,14 @@ const getAllVideos = asyncHandler(async (req, res) => {
       },
     });
   }
-  pipeline.push({
-    $match: {
-      $or: [
-        { title: { $regex: query, $options: "i" } },
-        { description: { $regex: query, $options: "i" } },
-      ],
-    },
-  });
+  // pipeline.push({
+  //   $match: {
+  //     $or: [
+  //       { title: { $regex: query, $options: "i" } },
+  //       { description: { $regex: query, $options: "i" } },
+  //     ],
+  //   },
+  // });
 
   //fetch all is Published Video
   pipeline.push({

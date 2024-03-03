@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import axiosInstance from "../../Helpers/AxiosInstance";
-import { RootState } from "@reduxjs/toolkit/query";
+import { RootState } from "../store";
 import axios from "axios";
 
 interface AuthState {
@@ -24,12 +24,12 @@ interface ValidationErrors {
   errorMessage: string;
   field_errors: Record<string, string>;
 }
-
-const initialState = {
-  isLoggedIn: localStorage.getItem("isLoggedIn") || false,
-  data: JSON.parse(localStorage.getItem("data") || "{}"),
+const initialData = localStorage.getItem("data");
+const initialIsLoggedIn = localStorage.getItem("isLoggedIn");
+const initialState: AuthState = {
+  isLoggedIn: initialIsLoggedIn ? JSON.parse(initialIsLoggedIn) : false,
+  data: initialData ? JSON.parse(initialData) : {},
 };
-
 export const createAccount = createAsyncThunk(
   "users/signup",
   async (data: SignUpUserData, { rejectWithValue }) => {
@@ -105,7 +105,7 @@ const authSlice = createSlice({
         const localStorage = window.localStorage as Storage;
         localStorage.clear();
         state.isLoggedIn = false;
-        state.data = "{}";
+        state.data = {};
       });
   },
 });
