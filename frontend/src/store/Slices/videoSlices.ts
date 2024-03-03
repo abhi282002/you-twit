@@ -3,7 +3,7 @@ import { RootState } from "../store";
 import axiosInstance from "../../Helpers/AxiosInstance";
 import Cookie from "js-cookie";
 interface videoState {
-  data: Array<Record<string, unknown>>;
+  Videodata: Array<Record<string, unknown>>;
 }
 const getAccessToken = () => Cookie.get("accessToken");
 const accessToken = getAccessToken();
@@ -11,10 +11,10 @@ const headers = {
   Authorization: `Bearer ${accessToken}`,
 };
 const initialState: videoState = {
-  data: [],
+  Videodata: [],
 };
 
-export const getAllVideo = createAsyncThunk("/video", async () => {
+export const AllVideos = createAsyncThunk("/video", async () => {
   try {
     const res = await axiosInstance.get("/video", { headers: headers });
     return res.data;
@@ -28,10 +28,10 @@ const videoSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getAllVideo.fulfilled, (state, action) => {
+    builder.addCase(AllVideos.fulfilled, (state, action) => {
       console.log(action.payload);
 
-      state.data = action.payload.data;
+      state.Videodata = action.payload.data;
     });
   },
 });
