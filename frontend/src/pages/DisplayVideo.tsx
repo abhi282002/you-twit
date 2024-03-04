@@ -45,8 +45,8 @@ const DisplayVideo = () => {
       <div className="pl-5 pr-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {VideosArray
           ? VideosArray.map((video) => (
-              <div className="relative h-[270px] shadow-xl ">
-                <div className="h-[200px] ">
+              <div className="relative h-[265px] w-[360px] shadow-xl ">
+                <div className="h-[200px] w-full">
                   <ReactPlayer
                     url={video?.videoFile?.url}
                     light={video?.thumbnail?.url}
@@ -63,10 +63,10 @@ const DisplayVideo = () => {
                         alt={video?.owner[0]?.fullName}
                         src={video?.owner[0]?.avatar}
                       />
-                      <h3 className="pl-1">{video?.description}</h3>
+                      <h3 className="pl-1 text-[14px]">{video?.description}</h3>
                     </div>
-                    <div className="relative bottom-1">
-                      <p className="text-sm pl-10">
+                    <div className="relative bottom-2">
+                      <p className="text-[12px] pl-10">
                         {`${video?.owner[0]?.fullName} . ${
                           video?.views
                         } views . ${formatTimeDifference(video?.createdAt)}`}
