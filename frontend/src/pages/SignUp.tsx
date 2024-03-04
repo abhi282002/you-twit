@@ -20,6 +20,7 @@ const SignUp = () => {
   const dispatch = useAppDispatch();
   const [avatar, setAvatar] = useState<File | null>(null);
   const [avatarstr, setAvatarStr] = useState<string>("");
+  const [showtitleBox, setTitleBox] = useState<boolean>(false);
   interface signUpUserInput {
     fullName: string;
     username: string;

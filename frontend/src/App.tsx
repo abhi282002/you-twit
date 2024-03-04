@@ -1,10 +1,19 @@
 import React, { FC, useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Outlet,
+  RouterProvider,
+} from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
+import DisplayAllVideo from "./pages/DisplayAllVideo";
 import DisplayVideo from "./pages/DisplayVideo";
-
 import UserChannel from "./pages/UserChannel";
+import Header from "./components/Header";
+import Body from "./pages/Body";
 
 function App() {
   interface User {
@@ -25,22 +34,42 @@ function App() {
     avatar: "",
     coverImage: "",
   });
-
+  const appRouter = createBrowserRouter([
+    {
+      path: "/signup",
+      element: <SignUp />,
+    },
+    {
+      path: "/signin",
+      element: <SignIn />,
+    },
+    {
+      path: "/",
+      element: <Body />,
+      children: [
+        {
+          path: "/",
+          element: (
+            <>
+              <DisplayAllVideo />
+            </>
+          ),
+        },
+        {
+          path: "/video/uploads",
+          element: <UserChannel />,
+        },
+        {
+          path: "/watch/v/:id",
+          element: <DisplayVideo />,
+        },
+      ],
+    },
+  ]);
   return (
-    <Router>
-      <Routes>
-        {/* Default layout for the root path */}
-        <Route path="/" element={<DisplayVideo />}>
-          {/* This is your default layout page */}
-          {/* Child routes for the root path */}
-          {/* Other child routes can be added here */}
-        </Route>
-        <Route path="/video/uploads" element={<UserChannel />} />
-        {/* Other top-level routes */}
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/signin" element={<SignIn />} />
-      </Routes>
-    </Router>
+    <>
+      <RouterProvider router={appRouter}></RouterProvider>
+    </>
   );
 }
 
