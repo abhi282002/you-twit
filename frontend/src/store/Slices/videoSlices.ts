@@ -2,8 +2,15 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import axiosInstance from "../../Helpers/AxiosInstance";
 import Cookie from "js-cookie";
+import toast from "react-hot-toast";
 interface videoState {
   Videodata: Array<Record<string, unknown>>;
+}
+interface UploadVideoInterface {
+  title: string;
+  description: string;
+  thumbnail: File | "";
+  videoFile: File | "";
 }
 const getAccessToken = () => Cookie.get("accessToken");
 const accessToken = getAccessToken();
@@ -23,6 +30,24 @@ export const AllVideos = createAsyncThunk("/video", async () => {
   }
 });
 
+export const UploadVideoThunk = createAsyncThunk(
+  "/video",
+  async (data: UploadVideoInterface, { rejectWithValue }) => {
+    try {
+      const res = axiosInstance.post("/video", data, {
+        headers: { ...headers, "Content-Type": "multipart/form-data" },
+      });
+      toast.promise(res, {
+        success: "Video Uploaded Successfully",
+        loading: "Wait Video Upoading in Process",
+        error: "Error While Uploading Video Please Try again!",
+      });
+      return (await res).data;
+    } catch (error) {
+      return error;
+    }
+  }
+);
 const videoSlice = createSlice({
   name: "video",
   initialState,

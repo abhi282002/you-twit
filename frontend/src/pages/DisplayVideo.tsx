@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Avatar } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -9,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "../store/hook";
 import { RootState } from "../store/store";
 import { AllVideos } from "../store/Slices/videoSlices";
 import Shimmer from "../components/Shimmer";
+import { formatTimeDifference } from "../config/formateTime";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -21,7 +23,6 @@ let allVideos: any;
 const DisplayVideo = () => {
   const videos = useAppSelector((state: RootState) => state.video.Videodata);
   const dispatch = useAppDispatch();
-
   useEffect(() => {
     getAllVideos();
   }, []);
@@ -41,20 +42,37 @@ const DisplayVideo = () => {
       <div>
         <Header />
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div className="pl-5 pr-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {VideosArray
           ? VideosArray.map((video) => (
-              <div className="h-[220px] relative shadow-xl ">
-                <ReactPlayer
-                  url={video?.videoFile?.url}
-                  light={video?.thumbnail?.url}
-                  playing
-                  width="100%"
-                  height="100%"
-                  controls={false}
-                />
-                <div className="absolute bottom-3 line-clamp-4 left-2">
-                  <h3>{video?.description}</h3>
+              <div className="relative h-[270px] shadow-xl ">
+                <div className="h-[200px] ">
+                  <ReactPlayer
+                    url={video?.videoFile?.url}
+                    light={video?.thumbnail?.url}
+                    playing
+                    width="100%"
+                    height="100%"
+                    controls={false}
+                  />
+                </div>
+                <div className="pl-2 pt-2 relative line-clamp-4">
+                  <div className="flex flex-col">
+                    <div className="flex">
+                      <Avatar
+                        alt={video?.owner[0]?.fullName}
+                        src={video?.owner[0]?.avatar}
+                      />
+                      <h3 className="pl-1">{video?.description}</h3>
+                    </div>
+                    <div className="relative bottom-1">
+                      <p className="text-sm pl-10">
+                        {`${video?.owner[0]?.fullName} . ${
+                          video?.views
+                        } views . ${formatTimeDifference(video?.createdAt)}`}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))

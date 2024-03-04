@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import DisplayVideo from "./pages/DisplayVideo";
+import UploadVideo from "./pages/UploadVideo";
 
 function App() {
   interface User {
@@ -33,7 +34,7 @@ function App() {
           {/* Child routes for the root path */}
           {/* Other child routes can be added here */}
         </Route>
-
+        <Route path="/video/uploads" element={<UploadVideo />} />
         {/* Other top-level routes */}
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
