@@ -5,6 +5,7 @@ import Cookie from "js-cookie";
 import toast from "react-hot-toast";
 
 interface OneVideoProps {
+  _id: string;
   title: string;
   description: string;
   duration: number;
@@ -36,6 +37,7 @@ const headers = {
 const initialState: videoState = {
   Videodata: [],
   OneVideo: {
+    _id: "",
     title: "",
     description: "",
     duration: 0.0,
@@ -68,8 +70,6 @@ export const GetVideoById = createAsyncThunk(
   async (id: GetVideoByIdProps, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(`/video/v/${id.id}`, { headers });
-
-      console.log(res?.data?.data);
 
       return res?.data?.data;
     } catch (error) {
@@ -110,7 +110,20 @@ const videoSlice = createSlice({
         state.Videodata = action.payload.data;
       })
       .addCase(GetVideoById.fulfilled, (state, action) => {
-        state.OneVideo = { ...action.payload };
+        state.OneVideo._id = action.payload._id;
+        state.OneVideo.title = action.payload.title;
+        state.OneVideo.description = action.payload.description;
+        state.OneVideo.duration = action.payload.duration;
+        state.OneVideo.isLiked = action.payload.isLiked;
+        state.OneVideo.likesCount = action.payload.likesCount;
+        state.OneVideo.avatar = action.payload.owner.avatar;
+        state.OneVideo.username = action.payload.owner.username;
+        state.OneVideo.likesCount = action.payload.likesCount;
+        state.OneVideo.isSubscribed = action.payload.owner.isSubscribed;
+        state.OneVideo.subscriberCount = action.payload.owner.subscriberCount;
+        state.OneVideo.views = action.payload.views;
+        state.OneVideo.thumbnail = action.payload.thumbnail.url;
+        state.OneVideo.videoFile = action.payload.videoFile.url;
       });
   },
 });

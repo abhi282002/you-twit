@@ -7,7 +7,8 @@ interface ele {
 const Shimmer = (item: ele) => {
   return (
     <div>
-      <div className="max-w-7xl mx-auto  h-auto mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+      <div className="max-w-7xl mx-auto  h-auto mt-12 
+      ">
         {Array(12)
           .fill("")
           .map((e, index) => (
